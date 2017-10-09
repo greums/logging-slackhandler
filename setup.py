@@ -9,11 +9,11 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
-    name='sample',
+    name='logging-slackhandler',
 
     version='0.0.1',
 
-    description='A sample Python project',
+    description='A logging handler for Slack',
     long_description=long_description,
 
     url='https://github.com/Greums/logging-slackhandler',
