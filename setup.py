@@ -41,5 +41,5 @@ setup(
 
     packages=find_packages(exclude=['contrib', 'docs', 'tests']),
 
-    install_requires=['requests']
+    install_requires=['requests-futures']
 )

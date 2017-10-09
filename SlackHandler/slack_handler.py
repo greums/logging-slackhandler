@@ -1,6 +1,6 @@
 from logging import Handler
 
-import requests
+from requests_futures.sessions import FuturesSession
 
 level_to_color = {
     'DEBUG': '#00bfff',
@@ -9,9 +9,11 @@ level_to_color = {
     'ERROR': '#ff8000',
     'CRITICAL': '#ff0000'
 }
+session = FuturesSession()
 
 
 class SlackHandler(Handler):
+
     def __init__(self, webhook_url, username=None, channel=None, icon_emoji=':snake:'):
         super(SlackHandler, self).__init__()
 
@@ -33,4 +35,4 @@ class SlackHandler(Handler):
             }]
         }
 
-        requests.post(self.webhook_url, json=payload)
+        session.post(self.webhook_url, json=payload)
