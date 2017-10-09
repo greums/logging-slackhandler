@@ -3,10 +3,10 @@ from logging import Handler
 from requests_futures.sessions import FuturesSession
 
 level_to_color = {
-    'DEBUG': '#00bfff',
-    'INFO': '#40ff00',
-    'WARNING': '#ffff00',
-    'ERROR': '#ff8000',
+    'DEBUG': '#5bc0de',
+    'INFO': '#0275d8',
+    'WARNING': '#f0ad4e',
+    'ERROR': '#d9534f',
     'CRITICAL': '#ff0000'
 }
 session = FuturesSession()
