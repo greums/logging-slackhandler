@@ -1,5 +1,5 @@
-logging-slackerhandler
-======================
+logging-slackhandler
+====================
 
 Python logging handler for Slack web hook integration with simple configuration.
 
