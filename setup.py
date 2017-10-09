@@ -1,28 +1,43 @@
+import codecs
+import io
+import re
+from os.path import join, abspath, dirname
+
 from setuptools import setup, find_packages
 
-from codecs import open
-from os import path
+MODULE_NAME = 'SlackLogger'
+CWD = abspath(dirname(__file__))
 
-here = path.abspath(path.dirname(__file__))
 
-with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
-    long_description = f.read()
+def read(*names, **kwargs):
+    with io.open(join(dirname(__file__), *names), encoding=kwargs.get("encoding", "utf8")) as fp:
+        return fp.read()
+
+
+def find_version(*file_paths):
+    version_file = read(*file_paths)
+    version_match = re.search(r"^VERSION = ['\"]([^'\"]*)['\"]", version_file, re.M)
+    if version_match:
+        return version_match.group(1)
+    raise RuntimeError("Unable to find version string.")
+
+
+VERSION = find_version(join(CWD, MODULE_NAME), "version.py")
+
+with codecs.open(join(CWD, 'README.rst'), encoding='utf-8') as reader:
+    LONG_DESCRIPTION = reader.read()
+
 
 setup(
     name='logging-slackhandler',
-
-    version='0.0.1',
-
+    version=VERSION,
     description='A logging handler for Slack',
-    long_description=long_description,
-
+    long_description=LONG_DESCRIPTION,
     url='https://github.com/Greums/logging-slackhandler',
-
+    download_url='https://github.com/Greums/logging-slackhandler/tarball/%s' % VERSION,
     author='Damien Le Bourdonnec',
-    author_email='damien.lebourdonnec@gmail.com',
-
+    author_email='greumsworkshop@gmail.com',
     license='MIT',
-
     classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
@@ -38,10 +53,10 @@ setup(
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6'
     ],
-
     keywords='logging slack',
-
+    platforms='any',
     packages=find_packages(exclude=['contrib', 'docs', 'tests']),
-
-    install_requires=['requests-futures']
+    install_requires=['requests-futures'],
+    include_package_data=True,
+    zip_safe=False
 )
