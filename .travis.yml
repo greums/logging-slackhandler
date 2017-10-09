@@ -12,6 +12,7 @@ env:
 
 install:
   - pip install .
+  - pip install --upgrade pylint
 
 before_script:
   - export PYTHONPATH=$PYTHONPATH:$(pwd)
