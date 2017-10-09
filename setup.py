@@ -39,7 +39,7 @@ setup(
         'Programming Language :: Python :: 3.6'
     ],
 
-    keywords='sample setuptools development',
+    keywords='logging slack',
 
     packages=find_packages(exclude=['contrib', 'docs', 'tests']),
 
