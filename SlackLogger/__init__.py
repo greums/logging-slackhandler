@@ -38,7 +38,7 @@ class SlackHandler(Handler):
                 attachment
             ]
         }
-
+        print payload
         self.session.post(self.webhook_url, json=payload)
 
 
@@ -47,7 +47,7 @@ class SlackFormatter(Formatter):
         return {
             'author_name': record.levelname,
             'color': LEVEL_TO_COLOR[record.levelname],
-            'mrkdwn': True,
+            'mrkdwn_in': ['text'],
             'text': super(SlackFormatter, self).format(record),
             'title': record.name,
             'ts': record.created
