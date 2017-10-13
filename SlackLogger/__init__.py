@@ -43,9 +43,6 @@ class SlackHandler(Handler):
 
 
 class SlackFormatter(Formatter):
-    # def __init__(self):
-    #     super(SlackFormatter, self).__init__()
-
     def format(self, record):
         return {
             'author_name': record.levelname,
