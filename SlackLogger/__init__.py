@@ -5,11 +5,11 @@ from SlackLogger.version import get_version
 __version__ = get_version()
 
 LEVEL_TO_COLOR = {
-    'DEBUG': '#e3e4e6',
-    'INFO': '#4183c4',
-    'WARNING': '#daa038',
-    'ERROR': '#d9534f',
-    'CRITICAL': '#2c2d30'
+    'DEBUG': '#AC92EC',
+    'INFO': '#48CFAD',
+    'WARNING': '#FFCE54',
+    'ERROR': '#FC6E51',
+    'CRITICAL': '#DA4453'
 }
 
 
