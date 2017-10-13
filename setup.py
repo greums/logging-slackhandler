@@ -1,9 +1,9 @@
 import codecs
 import io
 import re
-from os.path import join, abspath, dirname
+from os.path import abspath, dirname, join
 
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 MODULE_NAME = 'SlackLogger'
 CWD = abspath(dirname(__file__))
