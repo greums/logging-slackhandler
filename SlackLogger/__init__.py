@@ -38,7 +38,7 @@ class SlackHandler(Handler):
                 attachment
             ]
         }
-        print payload
+
         self.session.post(self.webhook_url, json=payload)
 
 
