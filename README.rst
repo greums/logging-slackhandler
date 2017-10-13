@@ -32,7 +32,7 @@ The following example shows how to send message to a Slack Incoming Webhooks:
     logger = logging.getLogger(__name__)
     logger.setLevel(logging.INFO)
 
-    slack_handler = SlackHandler(YOUR_WEBHOOK_URL)
+    slack_handler = SlackHandler('YOUR_WEBHOOK_URL')
     slack_handler.setFormatter(SlackFormatter())
 
     logger.addHandler(slack_handler)
