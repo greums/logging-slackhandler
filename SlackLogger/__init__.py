@@ -1,22 +1,8 @@
 """
-This module provides an additional handler and formatter for the logging
-package for Python to send log records as Slack messages.
-
-    import logging
-    from SlackLogger import SlackHandler, SlackFormatter
-
-    logger = logging.getLogger(__name__)
-    logger.setLevel(logging.INFO)
-
-    slack_handler = SlackHandler('YOUR_WEBHOOK_URL')
-    slack_handler.setFormatter(SlackFormatter())
-
-    logger.addHandler(slack_handler)
-
-    logger.info('Hi there!')
+This module provides additionals handler, formatter and filter for the logging
+package, so you can send Python log records to a Slack Incoming Webhook.
 """
-
-from logging import Handler, Formatter
+from logging import Handler, Formatter, Filter
 from requests_futures.sessions import FuturesSession
 from SlackLogger.version import get_version
 
@@ -82,3 +68,12 @@ class SlackFormatter(Formatter):
             'title': record.name,
             'ts': record.created
         }
+
+
+class SlackFilter(Filter):
+    """
+    SlackFilter instances can be use to determine if the specified record is to
+    be sent to Slack Incoming Webhook.
+    """
+    def filter(self, record):
+        return getattr(record, 'slack', False)

@@ -22,22 +22,28 @@ You can install, upgrade or uninstall logging-slackhandler with these commands:
 Usage
 -----
 
-The following example shows how to send message to a Slack Incoming Webhooks:
+This module provides additionals handler, formatter and filter for the logging
+package, so you can send Python log records to a Slack Incoming Webhook.
 
 .. code-block:: python
 
     import logging
-    from SlackLogger import SlackHandler, SlackFormatter
+    from SlackLogger import SlackHandler, SlackFormatter, SlackFilter
 
     logger = logging.getLogger(__name__)
-    logger.setLevel(logging.INFO)
+    logger.setLevel(logging.DEBUG)
 
     slack_handler = SlackHandler('YOUR_WEBHOOK_URL')
     slack_handler.setFormatter(SlackFormatter())
 
     logger.addHandler(slack_handler)
 
-    logger.info('Hi there!')
+    logger.info('This is an info message')
+
+    logger.addFilter(SlackFilter())
+
+    logger.debug('This is a debug message')
+    logger.info('Hi there!', extra={'slack': True})
 
 License
 -------
