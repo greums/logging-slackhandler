@@ -23,8 +23,7 @@ You can install, upgrade or uninstall logging-slackhandler with these commands:
 Usage
 -----
 
-This module provides additionals handler, formatter and filter for the logging
-package, so you can send Python log records to a Slack Incoming Webhook.
+The following example shows how to send records to a Slack Incoming Webhooks:
 
 .. code-block:: python
 
