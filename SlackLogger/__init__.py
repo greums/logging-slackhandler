@@ -8,14 +8,6 @@ from SlackLogger.version import get_version
 
 __version__ = get_version()
 
-LEVEL_TO_COLOR = {
-    'DEBUG': '#AC92EC',
-    'INFO': '#48CFAD',
-    'WARNING': '#FFCE54',
-    'ERROR': '#FC6E51',
-    'CRITICAL': '#DA4453'
-}
-
 
 class SlackHandler(Handler):
     """
@@ -59,10 +51,21 @@ class SlackFormatter(Formatter):
     SlackFormatter instances format log record and return a dictionary that can
     be sent as a Slack message attachment.
     """
+    def __init__(self):
+        super(SlackFormatter, self).__init__()
+
+        self.level_to_color = {
+            'DEBUG':    '#AC92EC',
+            'INFO':     '#48CFAD',
+            'WARNING':  '#FFCE54',
+            'ERROR':    '#FC6E51',
+            'CRITICAL': '#DA4453'
+        }
+
     def format(self, record):
         return {
             'author_name': record.levelname,
-            'color': LEVEL_TO_COLOR[record.levelname],
+            'color': self.level_to_color[record.levelname],
             'mrkdwn_in': ['text'],
             'text': super(SlackFormatter, self).format(record),
             'title': record.name,
@@ -74,6 +77,13 @@ class SlackFilter(Filter):
     """
     SlackFilter instances can be use to determine if the specified record is to
     be sent to Slack Incoming Webhook.
+
+    :param allow: filtering rule for log record.
     """
+    def __init__(self, allow=False):
+        super(SlackFilter, self).__init__()
+
+        self.allow = allow
+
     def filter(self, record):
-        return getattr(record, 'slack', False)
+        return getattr(record, 'slack', self.allow)

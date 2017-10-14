@@ -38,7 +38,8 @@ package, so you can send Python log records to a Slack Incoming Webhook.
 
     logger.addHandler(slack_handler)
 
-    logger.info('This is an info message')
+    for level in ['debug', 'info', 'warning', 'error', 'critical']:
+        getattr(logger, level)('This is a `%s` message', level)
 
     logger.addFilter(SlackFilter())
 
