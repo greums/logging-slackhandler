@@ -6,7 +6,8 @@ logging-slackhandler
 Introduction
 ------------
 
-Python logging handler for Slack web hook integration with simple configuration.
+This module provides additionals handler, formatter and filter for the logging
+package, so you can send Python log records to a Slack Incoming Webhook.
 
 Installation
 ------------
