@@ -2,37 +2,65 @@
 This module provides additionals handler, formatter and filter for the logging
 package, so you can send Python log records to a Slack Incoming Webhook.
 """
+import atexit
 import json
-from logging import Handler, Formatter, Filter
+from logging import getLogger, Handler, Formatter, Filter
+from multiprocessing import cpu_count
 from threading import Thread
 from SlackLogger.version import get_version
+
 try:
-    from urllib.request import urlopen
-except ImportError:
     from urllib2 import urlopen
+    from Queue import Queue
+except ImportError:
+    from urllib.request import urlopen
+    from queue import Queue
 
 __version__ = get_version()
+logger = getLogger(__name__)
 
 
-class ThreadedRequest(Thread):
+class Worker(Thread):
     """
-    ThreadedRequest instances send message to message to Slack Incoming Webhook
-    without blocking following log record.
-
-    :param url: Slack Incoming Webhook URL.
-    :param payload: message to be sent to Slack Webhook.
-    :param timeout: (optional) specifies a timeout in seconds for operations.
-
+    Thread executing tasks from a given tasks queue.
     """
-    def __init__(self, url, payload, timeout=10):
-        super(ThreadedRequest, self).__init__()
+    def __init__(self, tasks):
+        super(Worker, self).__init__()
 
-        self.url = url
-        self.data = json.dumps(payload).encode('utf-8')
-        self.timeout = timeout
+        self.tasks = tasks
+        self.daemon = True
+        self.start()
 
     def run(self):
-        urlopen(self.url, self.data, timeout=self.timeout)
+        while True:
+            func, args, kwargs = self.tasks.get()
+            try:
+                func(*args, **kwargs)
+            except Exception as error:
+                logger.error('Failed to process task: %s', str(error))
+            finally:
+                self.tasks.task_done()
+
+
+class WorkerPool(object):
+    """
+    Pool of threads consuming tasks from a queue.
+
+    :param num_threads: number of concurrent workers to create in pool.
+    """
+    def __init__(self, num_threads):
+        self.tasks_queue = Queue()
+
+        for _ in range(num_threads):
+            Worker(self.tasks_queue)
+
+    def add_task(self, func, *args, **kwargs):
+        """Add a task to the queue"""
+        self.tasks_queue.put((func, args, kwargs))
+
+    def wait_completion(self):
+        """Wait for completion of all the tasks in the queue"""
+        self.tasks_queue.join()
 
 
 class SlackHandler(Handler):
@@ -43,14 +71,19 @@ class SlackHandler(Handler):
     :param username: (optional) message sender username.
     :param channel: (optional) Slack channel to post to.
     :param icon_emoji: (optional) customize emoji for message sender.
+    :param timeout: (optional) specifies a timeout in seconds for blocking operations.
     """
-    def __init__(self, webhook_url, username=None, channel=None, icon_emoji=':snake:'):
+    def __init__(self, webhook_url, username=None, channel=None, icon_emoji=':snake:', timeout=10):
         super(SlackHandler, self).__init__()
 
-        self.webhook_url = webhook_url
+        self.url = webhook_url
         self.username = username
         self.channel = channel
         self.icon_emoji = icon_emoji
+        self.timeout = timeout
+
+        self.workers = WorkerPool(num_threads=cpu_count())
+        atexit.register(self.workers.wait_completion)
 
     def emit(self, record):
         if isinstance(self.formatter, SlackFormatter):
@@ -67,7 +100,8 @@ class SlackHandler(Handler):
             ]
         }
 
-        ThreadedRequest(self.webhook_url, payload).start()
+        data = json.dumps(payload).encode('utf-8')
+        self.workers.add_task(urlopen, self.url, data, timeout=self.timeout)
 
 
 class SlackFormatter(Formatter):
