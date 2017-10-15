@@ -2,11 +2,37 @@
 This module provides additionals handler, formatter and filter for the logging
 package, so you can send Python log records to a Slack Incoming Webhook.
 """
+import json
 from logging import Handler, Formatter, Filter
-from requests_futures.sessions import FuturesSession
+from threading import Thread
 from SlackLogger.version import get_version
+try:
+    from urllib.request import urlopen
+except ImportError:
+    from urllib2 import urlopen
 
 __version__ = get_version()
+
+
+class ThreadedRequest(Thread):
+    """
+    ThreadedRequest instances send message to message to Slack Incoming Webhook
+    without blocking following log record.
+
+    :param url: Slack Incoming Webhook URL.
+    :param payload: message to be sent to Slack Webhook.
+    :param timeout: (optional) specifies a timeout in seconds for operations.
+
+    """
+    def __init__(self, url, payload, timeout=10):
+        super(ThreadedRequest, self).__init__()
+
+        self.url = url
+        self.data = json.dumps(payload).encode('utf-8')
+        self.timeout = timeout
+
+    def run(self):
+        urlopen(self.url, self.data, timeout=self.timeout)
 
 
 class SlackHandler(Handler):
@@ -14,9 +40,9 @@ class SlackHandler(Handler):
     SlackHandler instances dispatch logging events to Slack Incoming Webhook.
 
     :param webhook_url: Slack Incoming Webhook URL.
-    :param username: (optional) Message sender username.
+    :param username: (optional) message sender username.
     :param channel: (optional) Slack channel to post to.
-    :param icon_emoji: (optional) Customize emoji for message sender.
+    :param icon_emoji: (optional) customize emoji for message sender.
     """
     def __init__(self, webhook_url, username=None, channel=None, icon_emoji=':snake:'):
         super(SlackHandler, self).__init__()
@@ -25,8 +51,6 @@ class SlackHandler(Handler):
         self.username = username
         self.channel = channel
         self.icon_emoji = icon_emoji
-
-        self.session = FuturesSession()
 
     def emit(self, record):
         if isinstance(self.formatter, SlackFormatter):
@@ -43,7 +67,7 @@ class SlackHandler(Handler):
             ]
         }
 
-        self.session.post(self.webhook_url, json=payload)
+        ThreadedRequest(self.webhook_url, payload).start()
 
 
 class SlackFormatter(Formatter):

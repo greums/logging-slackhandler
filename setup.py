@@ -56,7 +56,7 @@ setup(
     keywords='logging slack',
     platforms='any',
     packages=find_packages(exclude=['contrib', 'docs', 'tests']),
-    install_requires=['requests-futures'],
+    install_requires=[],
     include_package_data=True,
     zip_safe=False
 )
