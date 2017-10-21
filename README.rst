@@ -1,7 +1,7 @@
 logging-slackhandler
 ====================
 
-|Version| |Status| |Python| |License| |Build|
+|Version| |Status| |Python| |License| |Build| |Thanks|
 
 Introduction
 ------------
@@ -143,3 +143,6 @@ SOFTWARE.
 .. |Build| image:: https://img.shields.io/travis/Greums/logging-slackhandler.svg
     :target: https://travis-ci.org/Greums/logging-slackhandler
     :alt: Build Status
+.. |Thanks| image:: https://img.shields.io/badge/Say%20Thanks-!-1EAEDB.svg
+    :target: https://saythanks.io/inbox#badge-modal
+    :alt: Say Thanks!
