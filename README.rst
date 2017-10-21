@@ -43,6 +43,17 @@ Usage
 SlackHandler
 ~~~~~~~~~~~~
 
+``SlackHandler`` instances dispatch logging events to Slack Incoming Webhook.
+
+Here is the list of its parameters:
+
+    :webhook_url: Slack Incoming Webhook URL.
+    :username: (optional) message sender username.
+    :channel: (optional) Slack channel to post to.
+    :icon_emoji: (optional) customize emoji for message sender.
+    :timeout: (optional) specifies a timeout in seconds for blocking operations.
+    :pool_size: (optional) specifies number of workers processing records queue.
+
 The following example shows how to send records to a Slack Incoming Webhooks:
 
 .. code-block:: python
@@ -61,6 +72,13 @@ The following example shows how to send records to a Slack Incoming Webhooks:
 
 SlackFilter
 ~~~~~~~~~~~
+
+``SlackFilter`` instances can be use to determine if the specified record is to
+be sent to Slack Incoming Webhook.
+
+Here is the list of its parameters:
+
+    :allow: filtering rule for log record.
 
 You can use ``SlackFilter`` to allow only some records to be sent. When
 ``SlackFilter`` is defined, records will not be sent to Slack unless you
