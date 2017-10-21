@@ -82,6 +82,8 @@ class SlackHandler(Handler):
         self.icon_emoji = icon_emoji
         self.timeout = timeout
 
+        self.setFormatter(SlackFormatter())
+
         self.workers = WorkerPool(num_threads=cpu_count())
         atexit.register(self.workers.wait_completion)
 
