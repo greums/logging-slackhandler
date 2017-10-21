@@ -9,10 +9,27 @@ Introduction
 This module provides additionals handler, formatter and filter for the logging
 package, so you can send Python log records to a Slack Incoming Webhook.
 
+Credits
+-------
+
+This module is widely inspired by `Junhwi Kim <https://github.com/junhwi>`_'s
+work on `python-slack-logger <https://github.com/junhwi/python-slack-logger>`_.
+
+
+How it works
+------------
+
+In order to send record to Slack without slowing down code run, message posting
+is done in background by a threads pool, and new records will be added to the
+queue.
+
+In case of network delays or disconnection, app execution while not be blocked
+waiting for post response.
+
 Installation
 ------------
 
-You can install, upgrade or uninstall logging-slackhandler with these commands:
+You can install, upgrade or uninstall logging-slackhandler using pip:
 
 .. code-block:: bash
 
@@ -22,6 +39,9 @@ You can install, upgrade or uninstall logging-slackhandler with these commands:
 
 Usage
 -----
+
+SlackHandler
+~~~~~~~~~~~~
 
 The following example shows how to send records to a Slack Incoming Webhooks:
 
@@ -34,17 +54,34 @@ The following example shows how to send records to a Slack Incoming Webhooks:
     logger.setLevel(logging.DEBUG)
 
     slack_handler = SlackHandler('YOUR_WEBHOOK_URL')
-    slack_handler.setFormatter(SlackFormatter())
-
     logger.addHandler(slack_handler)
 
     for level in ['debug', 'info', 'warning', 'error', 'critical']:
         getattr(logger, level)('This is a `%s` message', level)
 
+SlackFilter
+~~~~~~~~~~~
+
+You can use ``SlackFilter`` to allow only some records to be sent. When
+``SlackFilter`` is defined, records will not be sent to Slack unless you
+explicitly ask it for by adding ``extra`` argument, as in following example:
+
+.. code-block:: python
+
     logger.addFilter(SlackFilter())
 
     logger.debug('This is a debug message')
     logger.info('Hi there!', extra={'slack': True})
+
+To have the opposite behavior (sent record by default), just set ``allow``
+parameter to ``True`` when creating ``SlackFilter``:
+
+.. code-block:: python
+
+    logger.addFilter(SlackFilter(allow=True))
+
+    logger.debug('This is a debug message', extra={'slack': False})
+    logger.info('Hi there!')
 
 License
 -------
