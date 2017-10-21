@@ -72,8 +72,9 @@ class SlackHandler(Handler):
     :param channel: (optional) Slack channel to post to.
     :param icon_emoji: (optional) customize emoji for message sender.
     :param timeout: (optional) specifies a timeout in seconds for blocking operations.
+    :param pool_size (optional) specifies number of workers processing records queue.
     """
-    def __init__(self, webhook_url, username=None, channel=None, icon_emoji=':snake:', timeout=10):
+    def __init__(self, webhook_url, username=None, channel=None, icon_emoji=':snake:', timeout=10, pool_size=cpu_count()):
         super(SlackHandler, self).__init__()
 
         self.url = webhook_url
@@ -84,7 +85,7 @@ class SlackHandler(Handler):
 
         self.setFormatter(SlackFormatter())
 
-        self.workers = WorkerPool(num_threads=cpu_count())
+        self.workers = WorkerPool(pool_size)
         atexit.register(self.workers.wait_completion)
 
     def emit(self, record):
