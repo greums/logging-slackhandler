@@ -19,8 +19,8 @@ work on `python-slack-logger <https://github.com/junhwi/python-slack-logger>`_.
 How it works
 ------------
 
-In order to send record to Slack without slowing down code run, message posting
-is done in background by a threads pool, and new records will be added to the
+In order to send records to Slack without slowing down code run, messages are
+posted in background by a threads pool, while new records are added to the
 queue.
 
 In case of network delays or disconnection, app execution while not be blocked
@@ -48,7 +48,7 @@ The following example shows how to send records to a Slack Incoming Webhooks:
 .. code-block:: python
 
     import logging
-    from SlackLogger import SlackHandler, SlackFormatter, SlackFilter
+    from SlackLogger import SlackHandler
 
     logger = logging.getLogger(__name__)
     logger.setLevel(logging.DEBUG)
@@ -68,6 +68,8 @@ explicitly ask it for by adding ``extra`` argument, as in following example:
 
 .. code-block:: python
 
+    from SlackLogger import SlackFilter
+
     logger.addFilter(SlackFilter())
 
     logger.debug('This is a debug message')
@@ -77,6 +79,8 @@ To have the opposite behavior (sent record by default), just set ``allow``
 parameter to ``True`` when creating ``SlackFilter``:
 
 .. code-block:: python
+
+    from SlackLogger import SlackFilter
 
     logger.addFilter(SlackFilter(allow=True))
 
