@@ -72,7 +72,32 @@ The following example shows how to send records to a Slack Incoming Webhooks:
 
 SlackFormatter
 ~~~~~~~~~~~~~~
-`Attachment structure <https://api.slack.com/docs/message-attachments>`_
+
+``SlackFormatter`` instances format log record and return a dictionary that can
+be sent as a Slack message attachment.
+
+Here is the list of its parameters:
+
+    :attr: (optional) custom attachment parameters to record attributes dictionary.
+    :lvl_color: (optional) custom record levels to colors dictionary.
+
+You can customize the appearance of Slack message with ``attr`` parameter, to bind a
+`Slack attachment property <https://api.slack.com/docs/message-attachments#attachment_structure>`_
+to a record attribute. Empty strings will not be displayed in message.
+
+Also, ``lvl_color`` parameter let you customize color-coding messages, binding a record
+levelname to an hex color code or Slack special codes (``good``, ``warning``, ``danger``).
+
+.. code-block:: python
+
+    from SlackLogger import SlackFormatter
+
+    attr={'pretext': '*Look at me!*', 'title': ''}
+    lvl_color={'INFO': 'good'})
+
+    slack_handler.setFormatter(SlackFormatter(attr=attr, lvl_color=lvl_color}))
+
+    logger.info('Hi there!')
 
 SlackFilter
 ~~~~~~~~~~~
