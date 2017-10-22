@@ -70,6 +70,10 @@ The following example shows how to send records to a Slack Incoming Webhooks:
     for level in ['debug', 'info', 'warning', 'error', 'critical']:
         getattr(logger, level)('This is a `%s` message', level)
 
+SlackFormatter
+~~~~~~~~~~~~~~
+`Attachment structure <https://api.slack.com/docs/message-attachments>`_
+
 SlackFilter
 ~~~~~~~~~~~
 

@@ -111,8 +111,11 @@ class SlackFormatter(Formatter):
     """
     SlackFormatter instances format log record and return a dictionary that can
     be sent as a Slack message attachment.
+
+    :param attr: custom attachment parameters to record attributes dictionary
+    :param lvl_color: custom record levels to colors dictionary
     """
-    def __init__(self):
+    def __init__(self, attr={}, lvl_color={}):
         super(SlackFormatter, self).__init__()
 
         self.level_to_color = {
@@ -122,16 +125,29 @@ class SlackFormatter(Formatter):
             'ERROR':    '#FC6E51',
             'CRITICAL': '#DA4453'
         }
+        self.level_to_color.update(lvl_color)
+
+        self.attachment = {
+            'author_name': '%(levelname)s',
+            'pretext': '',
+            'text': '%(message)s',
+            'title': '%(name)s',
+            'ts': '%(created)f'
+        }
+        self.attachment.update(attr)
 
     def format(self, record):
-        return {
-            'author_name': record.levelname,
+        record.message = super(SlackFormatter, self).format(record)
+
+        attachment = {
             'color': self.level_to_color[record.levelname],
-            'mrkdwn_in': ['text'],
-            'text': super(SlackFormatter, self).format(record),
-            'title': record.name,
-            'ts': record.created
+            'mrkdwn_in': ['pretext', 'text']
         }
+
+        for k, v in self.attachment.items():
+            attachment.update({k: v % record.__dict__})
+
+        return attachment
 
 
 class SlackFilter(Filter):
