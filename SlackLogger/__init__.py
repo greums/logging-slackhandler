@@ -144,8 +144,8 @@ class SlackFormatter(Formatter):
             'mrkdwn_in': ['pretext', 'text']
         }
 
-        for k, v in self.attachment.items():
-            attachment.update({k: v % record.__dict__})
+        for parameter, value in self.attachment.items():
+            attachment.update({parameter: value % record.__dict__})
 
         return attachment
 
