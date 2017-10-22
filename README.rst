@@ -93,9 +93,9 @@ levelname to an hex color code or Slack special codes (``good``, ``warning``, ``
     from SlackLogger import SlackFormatter
 
     attr={'pretext': '*Look at me!*', 'title': ''}
-    lvl_color={'INFO': 'good'})
+    lvl_color={'INFO': 'good'}
 
-    slack_handler.setFormatter(SlackFormatter(attr=attr, lvl_color=lvl_color}))
+    slack_handler.setFormatter(SlackFormatter(attr=attr, lvl_color=lvl_color))
 
     logger.info('Hi there!')
 
