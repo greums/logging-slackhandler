@@ -5,7 +5,7 @@ This module provides versioning informations.
     __version__ = get_version()
 """
 
-VERSION = '2.3.0'
+VERSION = '2.4.0'
 
 
 def get_version():
