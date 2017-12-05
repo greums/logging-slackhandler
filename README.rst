@@ -15,7 +15,6 @@ Credits
 This module is widely inspired by `Junhwi Kim <https://github.com/junhwi>`_'s
 work on `python-slack-logger <https://github.com/junhwi/python-slack-logger>`_.
 
-
 How it works
 ------------
 
@@ -133,6 +132,23 @@ parameter to ``True`` when creating ``SlackFilter``:
 
     logger.debug('This is a debug message', extra={'slack': False})
     logger.info('Hi there!')
+
+Good to know
+------------
+
+Messages order
+~~~~~~~~~~~~~~
+
+Messages are processed in a FIFO order from the queue, but due to network
+latency, Slack response time or message length, concurrent messages can appear
+in a different order in destination channel than the one you sent them.
+
+If message order is a requirement, you can define SlackHandler with a pool size
+of 1, so that only one thread will process the queue:
+
+.. code-block:: python
+
+    slack_handler = SlackHandler('YOUR_WEBHOOK_URL', pool_size=1)
 
 License
 -------

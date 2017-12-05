@@ -7,6 +7,7 @@ import json
 from logging import getLogger, Handler, Formatter, Filter
 from multiprocessing import cpu_count
 from threading import Thread
+from time import sleep, time
 from SlackLogger.version import get_version
 
 try:
@@ -62,6 +63,18 @@ class WorkerPool(object):
         """Wait for completion of all the tasks in the queue"""
         self.tasks_queue.join()
 
+    def wait_empty_queue(self, interval=0.1, timeout=5):
+        """Wait for task queue to be emptied by workers"""
+
+        start_time = time()
+
+        # wait until queue is empty or timeout is reached
+        while self.tasks_queue.empty() is False and time() - start_time < timeout:
+            sleep(interval)
+
+        # wait for workers to finish there last task
+        self.wait_completion()
+
 
 class SlackHandler(Handler):
     """
@@ -86,7 +99,7 @@ class SlackHandler(Handler):
         self.setFormatter(SlackFormatter())
 
         self.workers = WorkerPool(pool_size)
-        atexit.register(self.workers.wait_completion)
+        atexit.register(self.workers.wait_empty_queue)
 
     def emit(self, record):
         if isinstance(self.formatter, SlackFormatter):
